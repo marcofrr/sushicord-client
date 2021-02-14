@@ -64,14 +64,7 @@ const cache = new InMemoryCache({
                 //         // return [...existing, ...incoming]
                 //     }
                 // }
-                PrivMessages: {
-                    merge(existing = [], incoming: any[]) {
-                        console.log('existing', existing)
-                        console.log('incoming', incoming)
-                        return [...existing, ...incoming]
-                        // return incoming;
-                    },
-                }
+
             }
         }
 

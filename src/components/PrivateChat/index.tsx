@@ -47,6 +47,13 @@ export interface Props {
     senderId: string;
     users: User[];
 }
+interface Message {
+    _id: string;
+    receiderId: string;
+    senderId: string;
+    content: string;
+    createdAt: string;
+}
 
 export const PrivateChat: React.FC<Props> = ({
     status,
@@ -60,21 +67,19 @@ export const PrivateChat: React.FC<Props> = ({
     const receiverId = localStorage.getItem('currentUserId')
     const [user, setUser] = useState('');
     const submitBtn = document.querySelector('.submitBtn');
-    const [messages, setMessages] = useState<any[]>([]);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [inputVal, setInputVal] = useState('');
     const [newMessage, setNewMessage] = useState('');
-    const [offset, setOffset] = useState(0)
     const [onEnter, setOnEnter] = useState(false)
     const [usersState, setUsers] = useState<User[]>([]);
     const [hasText, setHasText] = useState(false)
     const [hasMore, setHasMore] = useState(true)
-
+    const [offset, setOffset] = useState(0)
     const cache = client.cache;
 
     const limit = 25;
-
     const { data, fetchMore, subscribeToMore, refetch, loading } = useQuery(QUERY_GET_PRIVATE_MESSAGES, {
-        // fetchPolicy: "no-cache",
+ //       fetchPolicy: "network-only",
         variables: {
             token,
             senderId,
@@ -83,30 +88,21 @@ export const PrivateChat: React.FC<Props> = ({
         },
         notifyOnNetworkStatusChange: true
     })
-    // useEffect(() => {
-    //     if (userId && currentUserName) {
-    //         const newUser: User = {
-    //             userId: userId,
-    //             userName: currentUserName
-    //         }
-    //         users.push(newUser)
+    useEffect(() => {
+        if(data && loading === false){
+            setMessages(data.PrivMessages)
+            //setMessages(data.PrivMessages.concat(messages))
+            // setMessages(messages.concat(data.PrivMessages))
+        } 
+    }, [data]);
 
-    //     } else {
-    //         history.push({
-    //             pathname: ERROR,
-    //             state: {
-    //                 errorNum: 500,
-    //                 errorMessage: 'Something went wrong'
-    //             }
-    //         })
-    //     }
-
-    //
-    // }, []);
+    useEffect(() => {
+        console.log(messages)
+    }, [messages]);
 
     useEffect(() => {
         let mounted = true;
-        if (mounted) refetch()
+        // if (mounted) refetch()
 
         let unsub: any;
         unsub = subscribeToMore({
@@ -116,17 +112,25 @@ export const PrivateChat: React.FC<Props> = ({
                 if (!subscriptionData.data) return current;
                 const newRequest = subscriptionData.data.newPrivMessage;
                 const updatedRequests = [...current.PrivMessages]
-                updatedRequests.unshift(newRequest)
-                cache.writeQuery({
-                    query: QUERY_GET_PRIVATE_MESSAGES,
-                    data: { PrivMessages: updatedRequests },
-                    variables: {
-                        token,
-                        senderId,
-                        offset,
-                        limit
-                    }
-                });
+                // const teste = updatedRequests.unshift(newRequest)
+                //const newRequest = Array.from(subscriptionData.data.newPrivMessage);
+                // console.log('updatedRequests',updatedRequests)
+                
+                // const incomingData = subscriptionData.data.newPrivMessage;
+                // const currentData = [...current.PrivMessages];
+                // console.log('incomingData',incomingData)
+                // console.log('currentData',currentData)
+                //return incomingData.concat(currentData)
+                // cache.writeQuery({
+                //     query: QUERY_GET_PRIVATE_MESSAGES,
+                //     data: { PrivMessages: teste },
+                //     variables: {
+                //         token,
+                //         senderId,
+                //         offset,
+                //         limit
+                //     }
+                // });
             }
         })
         return () => {
@@ -205,29 +209,39 @@ export const PrivateChat: React.FC<Props> = ({
     }, [inputVal])
 
     useEffect(() => {
-
-        if (data) {
-            if (data.PrivMessages.length < limit) {
-                setHasMore(false)
-            }
-            setMessages(messages.concat(data.PrivMessages))
-
-        }
-
-    }, [data])
-
-    useEffect(() => {
         getMore()
-
     }, [offset])
 
     const getMore = (): void => {
+
         fetchMore({
             variables: {
                 token,
                 senderId,
                 offset,
                 limit,
+            },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+
+                if (!fetchMoreResult) return previousResult;
+                if(fetchMoreResult.PrivMessages.length < limit)setHasMore(false);
+                const incomingData = [...fetchMoreResult.PrivMessages];
+                const currentData = [...messages];
+                const newData = currentData.concat(incomingData);
+                console.log('newData',newData)
+                setMessages(newData)
+                // cache.writeQuery({
+                //     query: QUERY_GET_PRIVATE_MESSAGES,
+                //     data: { PrivMessages: newData},
+                //     variables: {
+                //         token,
+                //         senderId,
+                //         offset,
+                //         limit
+                //     }
+                // });
+                // return incomingData.concat(currentData)
+
             }
         })
 
@@ -236,6 +250,13 @@ export const PrivateChat: React.FC<Props> = ({
     const deleteValInput = (): void => {
         let inputValue = (document.getElementById('searchInput') as HTMLInputElement).value = '';
         setInputVal('')
+    }
+
+    const getDate = (input: string) : string => {
+        const date = new Date(parseInt(input)).toLocaleDateString("pt-PT").toString()
+        const time = new Date(parseInt(input)).toLocaleTimeString("pt-PT").toString()
+        const dateTime = `${date}  ${time}`
+        return dateTime
     }
 
     return (
@@ -270,10 +291,10 @@ export const PrivateChat: React.FC<Props> = ({
 
                 {messages && messages.map((message: any, i: number) =>
                     <div key={i}>
-                        <ChannelMessage author={getUserName(message.senderId)} content={message.content} date={'21-03-03'} ></ChannelMessage>
+                        <ChannelMessage author={getUserName(message.senderId)} content={message.content} date={getDate(message.createdAt)} ></ChannelMessage>
                         {
-                            (i === messages.length - 3) && (
-                                <Waypoint onEnter={() => { setOffset(offset + limit) }} />
+                            (i === messages.length - 3) && hasMore && (
+                                <Waypoint onEnter={() => { setOffset(limit + offset) }} />
                             )
                         }
 

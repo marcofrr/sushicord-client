@@ -154,6 +154,7 @@ export const QUERY_GET_PRIVATE_MESSAGES = gql`
       senderId
       receiverId
       content
+      createdAt
     }
   }
 `;

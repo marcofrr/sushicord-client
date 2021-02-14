@@ -23,7 +23,7 @@ export const ChannelMessage: React.FC<Props> = ({
                 <Header>
                     <strong>{author}</strong>
                     {isBot && <span>Bot</span>}
-                    <time>{date}</time>
+                    <strong>{date}</strong>
                 </Header>
                 <Content>{content}</Content>
             </Message>
