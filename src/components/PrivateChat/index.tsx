@@ -79,7 +79,7 @@ export const PrivateChat: React.FC<Props> = ({
 
     const limit = 25;
     const { data, fetchMore, subscribeToMore, refetch, loading } = useQuery(QUERY_GET_PRIVATE_MESSAGES, {
- //       fetchPolicy: "network-only",
+        fetchPolicy: "cache-and-network",
         variables: {
             token,
             senderId,
@@ -91,14 +91,11 @@ export const PrivateChat: React.FC<Props> = ({
     useEffect(() => {
         if(data && loading === false){
             setMessages(data.PrivMessages)
-            //setMessages(data.PrivMessages.concat(messages))
-            // setMessages(messages.concat(data.PrivMessages))
+
         } 
     }, [data]);
 
-    useEffect(() => {
-        console.log(messages)
-    }, [messages]);
+
 
     useEffect(() => {
         let mounted = true;
@@ -108,29 +105,20 @@ export const PrivateChat: React.FC<Props> = ({
         unsub = subscribeToMore({
             document: SUBS_PRIVATE_MESSAGES,
             variables: { receiverId: receiverId, token: token },
-            updateQuery: (current, { subscriptionData }) => {
-                if (!subscriptionData.data) return current;
-                const newRequest = subscriptionData.data.newPrivMessage;
-                const updatedRequests = [...current.PrivMessages]
-                // const teste = updatedRequests.unshift(newRequest)
-                //const newRequest = Array.from(subscriptionData.data.newPrivMessage);
-                // console.log('updatedRequests',updatedRequests)
-                
-                // const incomingData = subscriptionData.data.newPrivMessage;
-                // const currentData = [...current.PrivMessages];
-                // console.log('incomingData',incomingData)
-                // console.log('currentData',currentData)
-                //return incomingData.concat(currentData)
-                // cache.writeQuery({
-                //     query: QUERY_GET_PRIVATE_MESSAGES,
-                //     data: { PrivMessages: teste },
-                //     variables: {
-                //         token,
-                //         senderId,
-                //         offset,
-                //         limit
-                //     }
-                // });
+            updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+                const newMessage = subscriptionData.data.newPrivMessage;
+                const mergedData: any[] =[newMessage,... prev.PrivMessages];
+                cache.writeQuery({
+                    query: QUERY_GET_PRIVATE_MESSAGES,
+                    data: { PrivMessages: mergedData },
+                    variables: {
+                        token,
+                        senderId,
+                        offset,
+                        limit
+                    }
+                });
             }
         })
         return () => {
@@ -228,7 +216,6 @@ export const PrivateChat: React.FC<Props> = ({
                 const incomingData = [...fetchMoreResult.PrivMessages];
                 const currentData = [...messages];
                 const newData = currentData.concat(incomingData);
-                console.log('newData',newData)
                 setMessages(newData)
                 // cache.writeQuery({
                 //     query: QUERY_GET_PRIVATE_MESSAGES,

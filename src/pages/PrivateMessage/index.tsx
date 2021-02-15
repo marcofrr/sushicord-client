@@ -21,9 +21,7 @@ interface User {
 
 export const PrivateMessage: React.FC = (): JSX.Element => {
     const location = useLocation<ILocation>();
-    useEffect(() => {
-        console.log('parent')
-    }, [])
+
     return (
         <Grid>
             <ServerList />

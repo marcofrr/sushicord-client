@@ -52,18 +52,11 @@ const cache = new InMemoryCache({
     typePolicies: {
         Query: {
             fields: {
-                // PrivMessages: {
-                //     merge(existing = [], incoming: any) {
-                //         if (incoming.length == 0) {
-                //             console.log('NAO MERGE')
-                //             return incoming
-                //         } else {
-                //             console.log('MERGE')
-                //             return [...existing, ...incoming]
-                //         }
-                //         // return [...existing, ...incoming]
-                //     }
-                // }
+                PrivMessages: {
+                    merge(existing = [], incoming: any) {
+                        return incoming
+                    }
+                }
 
             }
         }
