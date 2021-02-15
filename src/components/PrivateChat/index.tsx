@@ -92,15 +92,8 @@ export const PrivateChat: React.FC<Props> = ({
     useEffect(() => {
         if(data && loading === false){
             if(data.PrivMessages.length < limit) setHasMore(false);
-            // console.log('messages',messages)
-             console.log('data',data.PrivMessages)
-            
-            //const newData =[...messages,...data.PrivMessages]
             const newData = data.PrivMessages.concat(messages.filter((item : any) => data.PrivMessages.indexOf(item) < 0))
-            //console.log('newData',data.PrivMessages.concat(messages.filter((item : any) => data.PrivMessages.indexOf(item) < 0)))
-            // console.log('newData',_.union(messages,data.PrivMessages))
             var sortedData = _.sortBy( newData, 'createdAt').reverse();
-            // console.log('sortedData',sortedData)
             setMessages(sortedData)
 
         } 
@@ -110,8 +103,6 @@ export const PrivateChat: React.FC<Props> = ({
 
     useEffect(() => {
         let mounted = true;
-        // if (mounted) refetch()
-
         let unsub: any;
         unsub = subscribeToMore({
             document: SUBS_PRIVATE_MESSAGES,
@@ -119,54 +110,8 @@ export const PrivateChat: React.FC<Props> = ({
             updateQuery: (current, { subscriptionData }) => {
                 if (!subscriptionData.data) return current;                
                 const newRequest = subscriptionData.data.newPrivMessage;
-                const updatedRequests = [...current.PrivMessages]
-                console.log('newRequest',subscriptionData.data.newPrivMessage)
-                // cache.writeQuery({
-                //     query: QUERY_GET_PRIVATE_MESSAGES,
-                //     data: { PrivMessages: updatedRequests },
-                //     variables: {
-                //         token,
-                //         senderId,
-                //         offset,
-                //         limit
-                //     }
-                // });
-                // console.log('current',current.PrivMessages)
-                // console.log('beta:', messages.concat(subscriptionData.data.newPrivMessage))
-                cache.writeQuery({
-                    query: QUERY_GET_PRIVATE_MESSAGES,
-                    data: { PrivMessages: messages.concat(subscriptionData.data.newPrivMessage) },
-                    variables: {
-                        token,
-                        senderId,
-                        offset,
-                        limit
-                    }
-                });    
-                // setMessages(messages.concat(subscriptionData.data.newPrivMessage))           
-                // return {
-                //     PrivMessages: messages.concat(newRequest)
-                // };
-                // const newMessage = subscriptionData.data.newPrivMessage;
-                // const mergedData: any[] =[newMessage,... prev.PrivMessages];
-                // console.log('mergedData',mergedData)
-
-                // // return {
-                // //     PrivMessages: mergedData
-                // //   };
-                // // const beta = _.concat(newMessage,messages)
-                // // console.log(beta)
-                // // setMessages(beta)
-                // cache.writeQuery({
-                //     query: QUERY_GET_PRIVATE_MESSAGES,
-                //     data: { PrivMessages: mergedData },
-                //     variables: {
-                //         token,
-                //         senderId,
-                //         offset,
-                //         limit
-                //     }
-                // });
+                setMessages(oldState => oldState.concat(newRequest))           
+                setMessages(oldState => _.sortBy( oldState, 'createdAt').reverse())
             }
         })
         return () => {
@@ -243,43 +188,6 @@ export const PrivateChat: React.FC<Props> = ({
         inputVal.length == 0 ? setHasText(false) : setHasText(true)
 
     }, [inputVal])
-
-    // useEffect(() => {
-    //     // getMore()
-    // }, [offset])
-
-    // const getMore = (): void => {
-
-    //     fetchMore({
-    //         variables: {
-    //             token,
-    //             senderId,
-    //             offset,
-    //             limit,
-    //         },
-
-    //         // updateQuery: (prev, { fetchMoreResult }) => {
-    //         //     console.log('prev',prev.PrivMessages)
-    //         //     console.log('fetchMoreResult',fetchMoreResult.PrivMessages)
-    //         //     if (!fetchMoreResult) return prev;
-    //         //     console.log('xpto')
-    //         //     if(fetchMoreResult.PrivMessages.length < limit)setHasMore(false);
-
-    //         //     // const mergedData : any[] = [...fetchMoreResult.PrivMessages,...prev.PrivMessages];
-    //         //     // console.log(mergedData)
-    //         //     // // return {
-    //         //     // //     ...prev,
-    //         //     // //     mergedData
-    //         //     // // };
-    //         //    console.log({...messages, ...fetchMoreResult.PrivMessages})
-    //         //     return {
-    //         //         PrivMessages: [...prev.PrivMessages, ...fetchMoreResult.PrivMessages]
-    //         //       };
-
-    //         // }
-    //     })
-
-    // }
 
     const deleteValInput = (): void => {
         let inputValue = (document.getElementById('searchInput') as HTMLInputElement).value = '';
