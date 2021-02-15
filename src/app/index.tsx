@@ -52,12 +52,16 @@ const cache = new InMemoryCache({
     typePolicies: {
         Query: {
             fields: {
-                PrivMessages: {
-                    merge(existing = [], incoming: any) {
-                        return incoming
-                    }
-                }
-
+                 resourceCollection: offsetLimitPagination(),
+                 PrivMessages: {
+                     merge:false,
+                    // merge(existing = [], incoming: any) {
+                    //     console.log('existing',existing);
+                    //     console.log('incoming',incoming)
+                    //   return { ...incoming };
+                    //   // this part of code is depends what you actually need to do, in my 
+                    // }
+                  }
             }
         }
 
