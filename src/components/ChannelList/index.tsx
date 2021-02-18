@@ -14,8 +14,8 @@ export interface Props {
 export const ChannelList: React.FC<Props> = (
     { handleChange, toggleTextPopUp }
 ): JSX.Element => {
-    const token = localStorage.getItem('token');
-    const serverId = localStorage.getItem('currentServerId');
+    const token = sessionStorage.getItem('token');
+    const serverId = sessionStorage.getItem('currentServerId');
 
 
 

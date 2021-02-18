@@ -26,12 +26,12 @@ const ServerButton: React.FC<Props> = ({
 
         if (serverId === undefined || serverName === undefined) {
             history.push(ME)
-            localStorage.removeItem("currentServerId");
+            sessionStorage.removeItem("currentServerId");
             currentChannelId('')
             currentServerId('')
         } else {
-            localStorage.setItem("currentServerId", serverId);
-            localStorage.setItem("currentServerName", serverName)
+            sessionStorage.setItem("currentServerId", serverId);
+            sessionStorage.setItem("currentServerName", serverName)
             currentServerId(serverId)
             history.push(SERVER + '/' + serverId);
         }

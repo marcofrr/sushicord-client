@@ -24,6 +24,8 @@ export const HashtagIcon = styled(Hashtag)`
 export const Title = styled.h1`
     margin-left: 7px;
     font-size: 16px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--white);
 `;
 export const Separator = styled.div`
@@ -36,6 +38,8 @@ export const Separator = styled.div`
 `;
 export const Description = styled.span`
     font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--white)
 `;
 

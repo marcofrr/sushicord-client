@@ -9,7 +9,7 @@ import { getMainDefinition, offsetLimitPagination } from '@apollo/client/utiliti
 import { onError } from "@apollo/client/link/error";
 
 
-const token = localStorage.getItem("token");
+const token = sessionStorage.getItem("token");
 
 const httpLink = new HttpLink({
     uri: Config.baseUrl

@@ -32,6 +32,7 @@ export const Messages = styled.div`
 `;
 export const InputWrapper = styled.div`
   width: 100%;
+  height: 52px;
   padding: 0 16px;
 `;
 export const Input = styled.input`
@@ -49,7 +50,7 @@ export const Input = styled.input`
   }
   ~ svg {
     position: relative;
-    top: -50%;
+    top: -62%;
     left: 14px;
     transition: 180ms ease-in-out;
   }

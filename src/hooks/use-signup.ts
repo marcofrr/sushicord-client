@@ -32,7 +32,7 @@ export const useSignup = (): [
 
     if (!loginData) return false;
 
-    localStorage.setItem("token", loginData.login.token);
+    sessionStorage.setItem("token", loginData.login.token);
 
     return true;
   };

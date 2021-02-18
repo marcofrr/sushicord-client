@@ -20,6 +20,8 @@ export const Container = styled.div`
 export const Title = styled.h1`
   font-size: 16px;
   font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
   color: var(--white);
 `;
 export const ExpandIcon = styled(ExpandMore)`

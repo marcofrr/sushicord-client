@@ -23,8 +23,8 @@ export const FriendRequest: React.FC<Props> = ({
     showPending,
 }) => {
 
-    const token = localStorage.getItem('token');
-    const currentUserId = localStorage.getItem('currentUserId');
+    const token = sessionStorage.getItem('token');
+    const currentUserId = sessionStorage.getItem('currentUserId');
     const cache = client.cache;
 
     const ACCEPT = 'accept'

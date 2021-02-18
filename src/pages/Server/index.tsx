@@ -20,7 +20,7 @@ import { useHistory } from 'react-router-dom';
 import { ERROR } from '../../routes/pages'
 export const Server = (): JSX.Element => {
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const history = useHistory();
     const [serverId, setServerId] = useState('')
     const [channelId, setChannelId] = useState('')

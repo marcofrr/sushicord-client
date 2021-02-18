@@ -11,7 +11,7 @@ import { QUERY_GET_SERVER_LIST } from '../../graphql/queries';
 // }
 
 export const ServerList: React.FC = (): JSX.Element => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     const { data } = useQuery(QUERY_GET_SERVER_LIST, { variables: { token } })
     // const [servers, setServers] = useState<Server[]>([]);

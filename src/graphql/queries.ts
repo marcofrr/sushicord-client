@@ -127,12 +127,13 @@ export const QUERY_GET_CHANNEL_MESSAGES = gql`
       offset: $offset
       limit: $limit
     ) {
-      id
+      _id
       user {
         id
         userName
       }
       content
+      createdAt
     }
   }
 `;

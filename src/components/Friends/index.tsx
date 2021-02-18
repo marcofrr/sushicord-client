@@ -59,8 +59,8 @@ const SingleFriend: React.FC<Props> = ({
 
     const loadUsers = (): void => {
         const users: User[] = [];
-        const currentUserId = localStorage.getItem('currentUserId');
-        const currentUserName = localStorage.getItem('currentUserName');
+        const currentUserId = sessionStorage.getItem('currentUserId');
+        const currentUserName = sessionStorage.getItem('currentUserName');
 
         if (!currentUserId || !currentUserName) {
             history.push({
@@ -112,7 +112,7 @@ const SingleFriend: React.FC<Props> = ({
 
 export const Friends: React.FC = (): JSX.Element => {
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const [isMounted, setIsMounted] = useState(false)
 
     const { loading, data, refetch } = useQuery(QUERY_GET_FRIEND_LIST, { variables: { token } })

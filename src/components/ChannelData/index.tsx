@@ -7,6 +7,7 @@ import { Waypoint } from 'react-waypoint'
 import { MUTATION_SEND_SERVER_MESSAGE } from '../../graphql/mutations';
 import { SUBS_SERVERMESSAGES } from '../../graphql/subscriptions';
 import { client } from '../../app/'
+import * as _ from 'lodash';
 
 interface Props {
     serverId: string;
@@ -14,46 +15,45 @@ interface Props {
 }
 
 export const ChannelData: React.FC<Props> = ({ serverId, channelId }): JSX.Element => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const [messages, setMessages] = useState<any[]>([]);
     const [offset, setOffset] = useState(0)
     const [newMessage, setNewMessage] = useState('')
     const [onEnter, setOnEnter] = useState(false)
+    const [hasMore, setHasMore] = useState(true)
 
     const cache = client.cache;
 
     var limit = 25
 
     const { data, fetchMore, subscribeToMore, refetch } = useQuery(QUERY_GET_CHANNEL_MESSAGES, {
-        // fetchPolicy: "no-cache",
+        fetchPolicy: "cache-and-network",
         variables: {
             serverId,
             token,
             channelId,
             offset,
             limit
-        },
-        notifyOnNetworkStatusChange: true
+        }
     })
 
 
 
     const [handleMessage] = useMutation(MUTATION_SEND_SERVER_MESSAGE)
 
-    // useEffect(() => {
-    //     // refetch()
-    //     //setMessages([])
-    //     // setMessages(data)
-    //     console.log(messages.length)
-    // }, [channelId])
-
 
     useEffect(() => {
-        getMore()
         if (data) {
-            setMessages(data.ChannelMessages)
+            if(data.ChannelMessages.length < limit) setHasMore(false);
+            const newData = data.ChannelMessages.concat(messages.filter((item : any) => data.ChannelMessages.indexOf(item) < 0))
+            var sortedData = _.sortBy( newData, 'createdAt').reverse();
+            setMessages(sortedData)
         }
     }, [data])
+
+    useEffect(() => {
+        console.log('messages',messages)
+    }, [messages])
 
     useEffect(() => {
         if (newMessage.length > 0) {
@@ -68,7 +68,6 @@ export const ChannelData: React.FC<Props> = ({ serverId, channelId }): JSX.Eleme
                     channelId: channelId,
                     content: newMessage
                 },
-                optimisticResponse: true,
             })
             setNewMessage('')
         }
@@ -83,26 +82,11 @@ export const ChannelData: React.FC<Props> = ({ serverId, channelId }): JSX.Eleme
         };
         document.addEventListener("keydown", listener);
         return () => {
-
             document.removeEventListener("keydown", listener);
         };
     }, []);
-
-    const getMore = (): void => {
-        fetchMore({
-            variables: {
-                serverId,
-                token,
-                channelId,
-                offset,
-                limit
-            }
-        })
-
-    }
     useEffect(() => {
         let mounted = true;
-        if (mounted) refetch()
 
         let unsub: any;
         unsub = subscribeToMore({
@@ -110,20 +94,11 @@ export const ChannelData: React.FC<Props> = ({ serverId, channelId }): JSX.Eleme
             variables: { channelId: channelId, token: token },
             updateQuery: (current, { subscriptionData }) => {
                 if (!subscriptionData.data) return current;
-                const newRequest = subscriptionData.data.newServerMessage;
-                const updatedRequests = [...current.ChannelMessages]
-                updatedRequests.unshift(newRequest)
-                cache.writeQuery({
-                    query: QUERY_GET_CHANNEL_MESSAGES,
-                    data: { ChannelMessages: updatedRequests },
-                    variables: {
-                        serverId,
-                        token,
-                        channelId,
-                        offset,
-                        limit
-                    }
-                });
+                console.log(subscriptionData.data)               
+
+                const newRequest = subscriptionData.data.newChannelMessage;
+                setMessages(oldState => oldState.concat(newRequest))           
+                setMessages(oldState => _.sortBy( oldState, 'createdAt').reverse())
             }
         })
         return () => {
@@ -141,30 +116,26 @@ export const ChannelData: React.FC<Props> = ({ serverId, channelId }): JSX.Eleme
             });
             unsub();
         }
-        // eslint-disable-next-line
     }, [channelId])
-
-
 
     return (
         <Container>
 
             <Messages>
-                {messages ? messages?.map((message: any, i: number) =>
-                    <div key={message.id}>
+                {messages && messages?.map((message: any, i: number) =>
+                    <div key={message._id}>
                         <ChannelMessage
 
                             author={message.user.userName}
-                            date='04/09/2020'
+                            date={message.createdAt}
                             content={message.content}
+
                         />
-                        {i === messages.length - 3 && (
+                        {i === messages.length - 3 && hasMore && (
                             <Waypoint onEnter={() => setOffset(offset + limit)} />
                         )}</div>
 
-
-
-                ) : null}
+                )}
             </Messages>
 
             <InputWrapper>

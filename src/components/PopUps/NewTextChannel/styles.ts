@@ -3,7 +3,6 @@ import { Cross } from '@styled-icons/entypo'
 
 export const Background = styled.div`
   position: absolute;
-  margin-left: -50px;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);

@@ -13,9 +13,9 @@ export const SUBS_FRIENDREQUESTS = gql`
 `;
 
 export const SUBS_SERVERMESSAGES = gql`
-  subscription newFriendRequest($channelId: String!) {
-    newServerMessage(channelId: $channelId) {
-      id
+  subscription newChannelMessage($channelId: String!) {
+    newChannelMessage(channelId: $channelId) {
+      _id
       user {
         id
         userName

@@ -64,8 +64,8 @@ export const PrivateChat: React.FC<Props> = ({
 }): JSX.Element => {
 
     const history = useHistory();
-    const token = localStorage.getItem('token');
-    const receiverId = localStorage.getItem('currentUserId')
+    const token = sessionStorage.getItem('token');
+    const receiverId = sessionStorage.getItem('currentUserId')
     const [user, setUser] = useState('');
     const submitBtn = document.querySelector('.submitBtn');
     const [messages, setMessages] = useState<Message[]>([]);
@@ -86,8 +86,7 @@ export const PrivateChat: React.FC<Props> = ({
             senderId,
             offset,
             limit
-        },
-        // notifyOnNetworkStatusChange: true
+        }
     })
     useEffect(() => {
         if(data && loading === false){
@@ -195,12 +194,7 @@ export const PrivateChat: React.FC<Props> = ({
         setInputVal('')
     }
 
-    const getDate = (input: string) : string => {
-        const date = new Date(parseInt(input)).toLocaleDateString("pt-PT").toString()
-        const time = new Date(parseInt(input)).toLocaleTimeString("pt-PT").toString()
-        const dateTime = `${date}  ${time}`
-        return dateTime
-    }
+
 
     return (
         <>
@@ -234,7 +228,7 @@ export const PrivateChat: React.FC<Props> = ({
 
                 {messages && messages.map((message: any, i: number) =>
                     <div key={i}>
-                        <ChannelMessage author={getUserName(message.senderId)} content={message.content} date={getDate(message.createdAt)} ></ChannelMessage>
+                        <ChannelMessage author={getUserName(message.senderId)} content={message.content} date={message.createdAt} ></ChannelMessage>
                         {
                             (i === messages.length - 3) && hasMore && (
                                 <Waypoint onEnter={() => { setOffset(limit + offset) }} />

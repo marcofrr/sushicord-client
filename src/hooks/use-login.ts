@@ -24,9 +24,9 @@ export const useLogin = (): [
       return false;
     }
 
-    localStorage.setItem("token", loginData.login.token);
-    localStorage.setItem("currentUserId", loginData.login.user.id);
-    localStorage.setItem("currentUserName", loginData.login.user.userName);
+    sessionStorage.setItem("token", loginData.login.token);
+    sessionStorage.setItem("currentUserId", loginData.login.user.id);
+    sessionStorage.setItem("currentUserName", loginData.login.user.userName);
 
     return true;
   };

@@ -16,6 +16,13 @@ export const ChannelMessage: React.FC<Props> = ({
     hasMention,
     isBot
 }): JSX.Element => {
+
+    const getDate = (input: string) : string => {
+        const date = new Date(parseInt(input)).toLocaleDateString("pt-PT").toString()
+        const time = new Date(parseInt(input)).toLocaleTimeString("pt-PT").toString()
+        const dateTime = `${date}  ${time}`
+        return dateTime
+    }
     return (
         <Container className={hasMention ? 'mention' : ''}>
             <Avatar className={isBot ? 'mention' : ''} />
@@ -23,7 +30,7 @@ export const ChannelMessage: React.FC<Props> = ({
                 <Header>
                     <strong>{author}</strong>
                     {isBot && <span>Bot</span>}
-                    <strong>{date}</strong>
+                    <strong>{getDate(date)}</strong>
                 </Header>
                 <Content>{content}</Content>
             </Message>

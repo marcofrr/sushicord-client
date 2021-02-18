@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const UserInfo: React.FC<Props> = ({ userName }): JSX.Element => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     const { data } = useQuery(QUERY_GET_USER_NAME, { variables: { token } })
 

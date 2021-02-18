@@ -6,8 +6,8 @@ export interface Props {
     toggleTextPopUp: () => void;
 }
 export const NewTextChannel: React.FC<Props> = ({ toggleTextPopUp }): JSX.Element => {
-    const token = localStorage.getItem("token");
-    const serverId = localStorage.getItem('currentServerId');
+    const token = sessionStorage.getItem("token");
+    const serverId = sessionStorage.getItem('currentServerId');
 
     const [channelName, setChannelName] = useState('');
     const [handleChannel] = useMutation(MUTATION_CREATE_TEXT_CHANNEL)
