@@ -65,3 +65,11 @@ export const MUTATION_SEND_PRIVATE_MESSAGE = gql`
     }
   }
 `;
+
+export const MUTATION_CREATE_TEXT_CHANNEL = gql`
+  mutation createTextChannel($serverId: String!, $channelName: String!) {
+    createTextChannel(serverId: $serverId, channelName: $channelName) {
+      id
+    }
+  }
+`;

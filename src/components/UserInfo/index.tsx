@@ -1,19 +1,27 @@
 import React from 'react'
 import Tooltip from '@material-ui/core/Tooltip';
+import { QUERY_GET_USER_NAME } from '../../graphql/queries'
 // import { Profile, Headphone } from 'styled-icons/remix-fill'
 import { Container, Profile, Avatar, UserData, Icons, MicIcon, HeadphoneIcon, SettingsIcon } from './styles'
+import { useQuery } from '@apollo/client';
 interface Props {
     userName: string;
 }
 
 export const UserInfo: React.FC<Props> = ({ userName }): JSX.Element => {
+    const token = localStorage.getItem("token");
+
+    const { data } = useQuery(QUERY_GET_USER_NAME, { variables: { token } })
+
+
     return (
-        <Container className="userInfo">
+        <>
+        {data &&
+            <Container className="userInfo">
             <Profile>
                 <Avatar />
                 <UserData>
-                    <strong>{userName}</strong>
-                    <span>#9394</span>
+                    <strong>{data.User.userName}</strong>
                 </UserData>
             </Profile>
             <Icons>
@@ -28,6 +36,10 @@ export const UserInfo: React.FC<Props> = ({ userName }): JSX.Element => {
                 </Tooltip>
 
             </Icons>
-        </Container>
+        </Container>        
+        }
+
+        </>
+
     )
 }

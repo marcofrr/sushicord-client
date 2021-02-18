@@ -10,6 +10,15 @@ export const Container = styled.div`
   background-color: var(--FLBackground);
   overflow-y: scroll;
 
+  .active {
+    background-color: var(--btnHover);
+    color: var(--white);
+    &:hover {
+      cursor: default;
+    }
+  }
+
+
   ::-webkit-scrollbar {
     display: none;
   }
@@ -49,12 +58,6 @@ export const ChannelContainer = styled.div`
     justify-content: space-between;
   }
 
-  &:focus {
-    background-color: var(--hightlight);
-    > div span {
-      color: var(--white);
-    }
-  }
 `;
 
 export const NameWrapper = styled.div`
@@ -63,10 +66,12 @@ export const NameWrapper = styled.div`
   margin-bottom: 4px;
   align-items: center;
   justify-content: space-between;
+  pointer-events: none;
 
   align-items: center;
   white-space: nowrap;
   width: 140px;
+  pointer-events: none;
 
   overflow: hidden;
   text-overflow: ellipsis;

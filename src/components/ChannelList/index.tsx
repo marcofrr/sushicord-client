@@ -19,9 +19,9 @@ export const ChannelList: React.FC<Props> = (
 
 
 
-    const { data } = useQuery(QUERY_GET_SERVER_CHANNELS, { variables: { serverId, token } })
+    const { data, loading } = useQuery(QUERY_GET_SERVER_CHANNELS, { variables: { serverId, token } })
 
-    const refText = React.useRef<HTMLDivElement>(null)
+    // const refText = React.useRef<HTMLDivElement>(null)
     const handleFocus = (channelId: string, channelName: string): void => {
         handleChange(channelId, channelName)
     }
@@ -31,19 +31,27 @@ export const ChannelList: React.FC<Props> = (
     useEffect(() => {
 
 
-        if (data) {
-            const ele = document.querySelector("#channel0") as HTMLDivElement;
-            if (ele) {
-                ele.focus();
-                // localStorage.removeItem("currentChannelName");
-                // // handleChange(data.serverData.textChannels[0].name, data.serverData.textChannels[0].id)
-                // localStorage.setItem("currentChannelId", data.serverData.textChannels[0].id);
-                // currentChannelId(data.serverData.textChannels[0].id)
-            }
+        if (data && loading === false) {
+            const channel = document.querySelector("#channel0") as HTMLDivElement;
+            channel.classList.add('active')
         }
 
-        // eslint-disable-next-line
     }, [data]);
+
+    const handleActive = (e: any,channelId: string, channelName: string): void => {
+        var textChannels = document.querySelectorAll('.textChannel');
+        textChannels.forEach(function (channel) {
+            channel.classList.remove('active');
+
+        })
+        console.log(e.target)
+        if(!e.target.classList.contains('icon')) e.target.classList.add('active')
+
+        handleChange(channelId, channelName)
+
+        
+    }
+
     return (
         <>
             <Container id="channels">
@@ -54,22 +62,22 @@ export const ChannelList: React.FC<Props> = (
 
 
                 </Category>
-                {data && data.serverData.textChannels.map((channel: any, index: number) =>
+                {data && data.ServerData.textChannels.map((channel: any, index: number) =>
 
                     <ChannelContainer
                         key={channel.id}
-                        ref={refText}
-                        onClick={() => { handleFocus(channel.id, channel.name) }}
+                        onClick={(e) => { handleActive(e,channel.id, channel.name) }}
                         tabIndex={0}
                         id={'channel' + index.toString()}
+                        className={'textChannel'}
                     >
                         <NameWrapper>
                             <HashtagIcon />
                             <span>{channel.name}</span>
                         </NameWrapper>
                         <div>
-                            <InviteIcon />
-                            <SettingsIcon />
+                            <InviteIcon className={'icon'} />
+                            <SettingsIcon className={'icon'} />
                         </div>
                     </ChannelContainer>
                 )}
@@ -79,17 +87,18 @@ export const ChannelList: React.FC<Props> = (
                     <AddCategoryIcon />
                 </Category>
 
-                {data && data.serverData.voiceChannels.map((channel: any) =>
+                {data && data.ServerData.voiceChannels.map((channel: any) =>
                     <ChannelContainer
                         key={channel.id}
+                    
                     >
                         <NameWrapper>
                             <HashtagIcon />
                             <span>{channel.name}</span>
                         </NameWrapper>
                         <div>
-                            <InviteIcon />
-                            <SettingsIcon />
+                            <InviteIcon className={'icon'} />
+                            <SettingsIcon className={'icon'} />
                         </div>
                     </ChannelContainer>
                 )}

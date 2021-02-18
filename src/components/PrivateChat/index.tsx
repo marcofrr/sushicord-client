@@ -87,7 +87,7 @@ export const PrivateChat: React.FC<Props> = ({
             offset,
             limit
         },
-        notifyOnNetworkStatusChange: true
+        // notifyOnNetworkStatusChange: true
     })
     useEffect(() => {
         if(data && loading === false){
@@ -108,7 +108,8 @@ export const PrivateChat: React.FC<Props> = ({
             document: SUBS_PRIVATE_MESSAGES,
             variables: { receiverId: receiverId, token: token },
             updateQuery: (current, { subscriptionData }) => {
-                if (!subscriptionData.data) return current;                
+                if (!subscriptionData.data) return current; 
+                console.log(subscriptionData)               
                 const newRequest = subscriptionData.data.newPrivMessage;
                 setMessages(oldState => oldState.concat(newRequest))           
                 setMessages(oldState => _.sortBy( oldState, 'createdAt').reverse())
@@ -177,7 +178,7 @@ export const PrivateChat: React.FC<Props> = ({
                     receiverId: senderId,
                     content: newMessage
                 },
-                optimisticResponse: true,
+                // optimisticResponse: true,
             })
             setNewMessage('')
         }

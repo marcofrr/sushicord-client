@@ -68,7 +68,7 @@ export const QUERY_GET_SERVER_LIST = gql`
 
 export const QUERY_GET_SERVER_NAME = gql`
   query get($serverId: String!, $token: String!) {
-    serverData(serverId: $serverId, token: $token) {
+    ServerData(serverId: $serverId, token: $token) {
       id
       name
     }
@@ -77,7 +77,7 @@ export const QUERY_GET_SERVER_NAME = gql`
 
 export const QUERY_GET_SERVER_TEXT_CHANNELS = gql`
   query get($serverId: String!, $token: String!) {
-    serverData(serverId: $serverId, token: $token) {
+    ServerData(serverId: $serverId, token: $token) {
       textChannels {
         id
         name
@@ -88,7 +88,7 @@ export const QUERY_GET_SERVER_TEXT_CHANNELS = gql`
 
 export const QUERY_GET_SERVER_VOICE_CHANNELS = gql`
   query get($serverId: String!, $token: String!) {
-    serverData(serverId: $serverId, token: $token) {
+    ServerData(serverId: $serverId, token: $token) {
       voiceChannels {
         id
         name
@@ -99,7 +99,7 @@ export const QUERY_GET_SERVER_VOICE_CHANNELS = gql`
 
 export const QUERY_GET_SERVER_CHANNELS = gql`
   query get($serverId: String!, $token: String!) {
-    serverData(serverId: $serverId, token: $token) {
+    ServerData(serverId: $serverId, token: $token) {
       voiceChannels {
         id
         name
@@ -114,15 +114,15 @@ export const QUERY_GET_SERVER_CHANNELS = gql`
 
 export const QUERY_GET_CHANNEL_MESSAGES = gql`
   query get(
-    $serverId: String!
     $token: String!
+    $serverId: String!
     $channelId: String!
     $offset: Int!
     $limit: Int!
   ) {
-    channelMessages(
-      serverId: $serverId
+    ChannelMessages(
       token: $token
+      serverId: $serverId
       channelId: $channelId
       offset: $offset
       limit: $limit
@@ -158,6 +158,20 @@ export const QUERY_GET_PRIVATE_MESSAGES = gql`
     }
   }
 `;
+
+export const QUERY_GET_USER_NAME = gql`
+  query User(
+    $token: String!
+  ) {
+    User(
+      token: $token
+    ) {
+      id
+      userName
+    }
+  }
+`;
+
 
 // export const QUERY_GET_OPPONENT = gql`
 //     query GetSkill($id: ID!){

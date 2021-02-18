@@ -51,7 +51,7 @@ export const ChannelData: React.FC<Props> = ({ serverId, channelId }): JSX.Eleme
     useEffect(() => {
         getMore()
         if (data) {
-            setMessages(data.channelMessages)
+            setMessages(data.ChannelMessages)
         }
     }, [data])
 
@@ -111,11 +111,11 @@ export const ChannelData: React.FC<Props> = ({ serverId, channelId }): JSX.Eleme
             updateQuery: (current, { subscriptionData }) => {
                 if (!subscriptionData.data) return current;
                 const newRequest = subscriptionData.data.newServerMessage;
-                const updatedRequests = [...current.channelMessages]
+                const updatedRequests = [...current.ChannelMessages]
                 updatedRequests.unshift(newRequest)
                 cache.writeQuery({
                     query: QUERY_GET_CHANNEL_MESSAGES,
-                    data: { channelMessages: updatedRequests },
+                    data: { ChannelMessages: updatedRequests },
                     variables: {
                         serverId,
                         token,
@@ -130,7 +130,7 @@ export const ChannelData: React.FC<Props> = ({ serverId, channelId }): JSX.Eleme
             mounted = false;
             cache.writeQuery({
                 query: QUERY_GET_CHANNEL_MESSAGES,
-                data: { channelMessages: [] },
+                data: { ChannelMessages: [] },
                 variables: {
                     serverId,
                     token,

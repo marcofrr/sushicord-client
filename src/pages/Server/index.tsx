@@ -16,11 +16,12 @@ import { useQuery } from '@apollo/client';
 import { QUERY_GET_SERVER_TEXT_CHANNELS } from '../../graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 import { NewTextChannel } from '../../components/PopUps/NewTextChannel';
-
+import { useHistory } from 'react-router-dom';
+import { ERROR } from '../../routes/pages'
 export const Server = (): JSX.Element => {
 
     const token = localStorage.getItem('token');
-
+    const history = useHistory();
     const [serverId, setServerId] = useState('')
     const [channelId, setChannelId] = useState('')
     const [channelName, setChannelName] = useState('')
@@ -29,7 +30,7 @@ export const Server = (): JSX.Element => {
 
     const { id } = useParams()
 
-    const [getInfo, { data }] = useLazyQuery(QUERY_GET_SERVER_TEXT_CHANNELS)
+    const [getInfo, { data, loading }] = useLazyQuery(QUERY_GET_SERVER_TEXT_CHANNELS)
 
     useEffect(() => {
         setServerId(id)
@@ -43,19 +44,13 @@ export const Server = (): JSX.Element => {
 
     useEffect(() => {
 
-        if (data) {
-            setChannelId(data.serverData.textChannels[0].id)
-            setChannelName(data.serverData.textChannels[0].name)
+        if (data && loading === false) {
+            setChannelId(data.ServerData.textChannels[0].id)
+            setChannelName(data.ServerData.textChannels[0].name)
         }
 
     }, [data])
-    // useEffect(() => {
 
-    //     const body = document.querySelector('body')
-    //     console.log(body)
-    //     if (body) body.style.overflow = newTextChannel ? 'hidden' : 'auto';
-
-    // }, [newTextChannel])
 
     const handleChange = (channelId: string, channelName: string): void => {
         setChannelId(channelId)
@@ -63,6 +58,17 @@ export const Server = (): JSX.Element => {
     }
     const toggleTextPopUp = (): void => {
         setNewTextChannel(oldState => !oldState)
+    }
+
+    const goError = (): void => {
+        
+        history.push({
+            pathname: ERROR,
+            state: {
+                errorNum: 500,
+                errorMessage: 'Something went wrong!'
+            }
+        })
     }
 
     return (
