@@ -4,7 +4,7 @@ export const SUBS_FRIENDREQUESTS = gql`
   subscription newFriendRequest($receiverId: String!) {
     newFriendRequest(receiverId: $receiverId) {
       sender {
-        id
+        _id
         email
         userName
       }

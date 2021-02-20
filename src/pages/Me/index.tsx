@@ -19,9 +19,9 @@ import { useHistory } from 'react-router-dom';
 
 export const Me = (): any => {
 
-    const [showOnline, setShowOnline] = useState(true)
+    const [showOnline, setShowOnline] = useState(false)
     const [showAll, setShowAll] = useState(false)
-    const [showPending, setShowPending] = useState(false)
+    const [showPending, setShowPending] = useState(true)
     const [toggleFriend, setToggleFriend] = useState(false)
 
     //states for mobile screens

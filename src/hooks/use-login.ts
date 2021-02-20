@@ -27,7 +27,9 @@ export const useLogin = (): [
     sessionStorage.setItem("token", loginData.login.token);
     sessionStorage.setItem("currentUserId", loginData.login.user.id);
     sessionStorage.setItem("currentUserName", loginData.login.user.userName);
-
+    //Dispatch an event
+    var e = new CustomEvent("onLogin", {detail: loginData.login.token});
+    document.dispatchEvent(e);
     return true;
   };
 

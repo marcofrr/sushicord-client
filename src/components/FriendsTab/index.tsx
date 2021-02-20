@@ -33,9 +33,9 @@ export const FriendsTab: React.FC<Props> = ({
                 <FriendsIcon />
                 <strong>Friends</strong>
                 <Separator />
-                <Button className="btn btnActive" onClick={(e) => { toggleDesktop('online'); handleActive(e) }}>Online</Button>
+                <Button className="btn" onClick={(e) => { toggleDesktop('online'); handleActive(e) }}>Online</Button>
                 <Button className="btn" onClick={(e) => { toggleDesktop('all'); handleActive(e) }}>All</Button>
-                <Button className="btn" onClick={(e) => { toggleDesktop('pending'); handleActive(e) }}> Pending</Button>
+                <Button className="btn btnActive" onClick={(e) => { toggleDesktop('pending'); handleActive(e) }}> Pending</Button>
                 <Button className="btn" >Blocked</Button>
                 <AddFriendBtn className="btn addFriend" onClick={(e) => { toggleDesktop('handleFriend'); handleActive(e) }}>Add Friend</AddFriendBtn>
             </LeftIconsWrapper>
