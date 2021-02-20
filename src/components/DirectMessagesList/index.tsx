@@ -19,7 +19,7 @@ export const DirectMessagesList: React.FC = (): JSX.Element => {
             </Separator>
 
             <DMContainer>
-                <DirectMessageButton status="online" user="Marco Ferreira"></DirectMessageButton>
+                <DirectMessageButton status="online" user="Marco Ferreira" notifications="5" ></DirectMessageButton>
 
             </DMContainer>
 

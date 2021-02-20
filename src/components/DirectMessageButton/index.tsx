@@ -1,16 +1,18 @@
 import React from 'react'
-import { Container, Avatar, Status, CloseIcon } from './styles'
+import { Container, Avatar, Status, Notications, CloseIcon } from './styles'
 import { useHistory } from 'react-router-dom'
 import { PRIVATEMESSAGE } from '../../routes/pages'
 export interface Props {
     user?: string;
     avatar?: string;
     status: string;
+    notifications?: string;
 }
 export const DirectMessageButton: React.FC<Props> = ({
     user,
     avatar,
-    status
+    status,
+    notifications
 }): JSX.Element => {
     const history = useHistory()
 
@@ -26,7 +28,7 @@ export const DirectMessageButton: React.FC<Props> = ({
                 </Avatar>
                 <Container className="text">
                     <strong>{user}</strong>
-
+                    <Notications className="notifications">99</Notications>
                 </Container>
             </Container>
 

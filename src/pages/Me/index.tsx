@@ -19,9 +19,9 @@ import { useHistory } from 'react-router-dom';
 
 export const Me = (): any => {
 
-    const [showOnline, setShowOnline] = useState(false)
+    const [showOnline, setShowOnline] = useState(true)
     const [showAll, setShowAll] = useState(false)
-    const [showPending, setShowPending] = useState(true)
+    const [showPending, setShowPending] = useState(false)
     const [toggleFriend, setToggleFriend] = useState(false)
 
     //states for mobile screens
@@ -76,8 +76,9 @@ export const Me = (): any => {
     }, [mobileFriends])    // const { data, loading, error } = useQuery(QUERY_GET_ME_PAGE, { variables: { token } })
 
 
-
-
+    // useEffect(() => {
+    //     setShowPending(true)
+    // }, [])
 
     // if (loading) return 'Loading...';
     // if (error) return `Error! ${error.message}`;

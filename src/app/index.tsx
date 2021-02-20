@@ -11,7 +11,7 @@ import { onError } from "@apollo/client/link/error";
 
 const token = sessionStorage.getItem("token");
 
-const httpLink = new HttpLink({
+export const httpLink = new HttpLink({
     uri: Config.baseUrl
 });
 
@@ -19,7 +19,7 @@ const wsLink = new WebSocketLink({
     uri: Config.baseUrlWS,
     options: {
         reconnect: true,
-        lazy: true,
+        // lazy: true,
         connectionParams: {
             token: token,
         },
@@ -65,7 +65,7 @@ function App() {
         uri: Config.baseUrlWS,
         options: {
             reconnect: true,
-             lazy: true,
+            //  lazy: true,
             connectionParams: {
                 token: tokenState,
             },
@@ -73,7 +73,17 @@ function App() {
         
     });
 
-
+    const newSplitLink = split(
+        ({ query }) => {
+            const definition = getMainDefinition(query);
+            return (
+                definition.kind === 'OperationDefinition' &&
+                definition.operation === 'subscription'
+            );
+        },
+        newWsLink,
+        httpLink,
+    );
     useEffect(() => {
         const listener = (e: any) => {
             setToken(e.detail)
@@ -83,7 +93,19 @@ function App() {
             document.removeEventListener("onLogin", listener);
         };
     }, []);
+ 
+    useEffect(  () => {
+        client.clearStore();
+        client.stop();
+        // (wsLink as any).subscriptionClient.close();
+        // await app.close(); //
 
+        client = new ApolloClient({
+            link: newSplitLink,
+            cache: cache
+        })  
+
+    }, [token]);
 
     return (
         <>

@@ -25,15 +25,18 @@ export const Container = styled.div`
   text-overflow: ellipsis;
 
   > strong {
-    margin-left: 8px;
+    margin-left: 4px;
     color: grey;
   }
   .text {
-    width: 150px;
+    width: 160px;
   }
   &:hover {
     .close {
       display: flex;
+    }
+    .notifications{
+      display: none;
     }
     background-color: var(--ChannelInfoHover);
   }
@@ -56,8 +59,8 @@ export const Container = styled.div`
 export const Avatar = styled.div`
   position: relative;
   flex-shrink: 0;
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   background-color: var(--white);
   border-radius: 50%;
 `;
@@ -83,4 +86,16 @@ export const CloseIcon = styled(Close)`
   &:hover {
     color: var(--white);
   }
+`;
+
+export const Notications = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: var(--SLBackground);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
 `;
