@@ -73,3 +73,14 @@ export const MUTATION_CREATE_TEXT_CHANNEL = gql`
     }
   }
 `;
+
+export const MUTATION_UPDATE_UNSEEN_MESSAGES = gql`
+  mutation toggleUnseenMessages($senderId: String!) {
+    toggleUnseenMessages(senderId: $senderId)
+    {
+      id
+      userName
+    }
+  }
+`;
+

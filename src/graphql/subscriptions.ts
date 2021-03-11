@@ -36,3 +36,12 @@ export const SUBS_PRIVATE_MESSAGES = gql`
     }
   }
 `;
+
+export const SUBS_PRIVATE_MESSAGES_NOTIFICATION = gql`
+  subscription newPrivMessageNotification($receiverId: String!) {
+    newPrivMessageNotification(receiverId: $receiverId) {
+      _id
+		  senderId 
+    }
+  }
+`;

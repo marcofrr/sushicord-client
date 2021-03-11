@@ -173,6 +173,22 @@ export const QUERY_GET_USER_NAME = gql`
   }
 `;
 
+export const QUERY_GET_DIRECT_MESSAGES = gql`
+  query DirectMessages (
+    $token: String!
+  ) {
+    ChatList(
+      token: $token
+    ) {
+      user{
+        id,
+        userName
+      }
+      unreadMessages
+    }
+  }
+`;
+
 
 // export const QUERY_GET_OPPONENT = gql`
 //     query GetSkill($id: ID!){

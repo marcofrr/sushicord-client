@@ -95,7 +95,7 @@ export const Notications = styled.div`
   color: white;
   background-color: var(--SLBackground);
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 28px;
   font-size: 12px;
 `;
