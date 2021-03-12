@@ -29,7 +29,6 @@ export const FriendRequest: React.FC<Props> = ({
 
     const ACCEPT = 'accept'
     const DECLINE = 'decline'
-    // eslint-disable-next-line
     const [friendRequests, setFriendRequests] = useState([])
     const { subscribeToMore, data, loading, refetch } = useQuery(QUERY_GET_FRIEND_REQUESTS, { variables: { token } })
 

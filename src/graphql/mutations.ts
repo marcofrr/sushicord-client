@@ -23,7 +23,7 @@ export const MUTATION_LOGIN = gql`
     login(email: $email, password: $password) {
       token
       user {
-        id
+        _id
         userName
       }
     }
@@ -78,7 +78,7 @@ export const MUTATION_UPDATE_UNSEEN_MESSAGES = gql`
   mutation toggleUnseenMessages($senderId: String!) {
     toggleUnseenMessages(senderId: $senderId)
     {
-      id
+      _id
       userName
     }
   }

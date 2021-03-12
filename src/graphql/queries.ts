@@ -26,13 +26,6 @@ export const QUERY_GET_ME_PAGE = gql`
       id
       name
     }
-    # friendRequests(token: $token) {
-    #   _id
-    #   sender {
-    #     _id
-    #     userName
-    #   }
-    # }
   }
 `;
 
@@ -51,7 +44,7 @@ export const QUERY_GET_FRIEND_REQUESTS = gql`
 export const QUERY_GET_FRIEND_LIST = gql`
   query get($token: String!) {
     friends(token: $token) {
-      id
+      _id
       userName
     }
   }
@@ -129,7 +122,7 @@ export const QUERY_GET_CHANNEL_MESSAGES = gql`
     ) {
       _id
       user {
-        id
+        _id
         userName
       }
       content
@@ -167,7 +160,7 @@ export const QUERY_GET_USER_NAME = gql`
     User(
       token: $token
     ) {
-      id
+      _id
       userName
     }
   }
@@ -180,10 +173,9 @@ export const QUERY_GET_DIRECT_MESSAGES = gql`
     ChatList(
       token: $token
     ) {
-      user{
-        id,
-        userName
-      }
+      userId,
+      userName,
+      status,
       unreadMessages
     }
   }

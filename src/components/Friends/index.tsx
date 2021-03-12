@@ -137,7 +137,7 @@ export const Friends: React.FC = (): JSX.Element => {
             {data ?
                 <Container className="friends">
                     {data && data.friends.map((friend: any) =>
-                        <SingleFriend key={friend.id} status="online" userName={friend.userName} userId={friend.id} />
+                        <SingleFriend key={friend._id} status="online" userName={friend.userName} userId={friend._id} />
                     )}
                 </Container>
                 :

@@ -17,7 +17,7 @@ export const SUBS_SERVERMESSAGES = gql`
     newChannelMessage(channelId: $channelId) {
       _id
       user {
-        id
+        _id
         userName
       }
       createdAt
@@ -38,10 +38,17 @@ export const SUBS_PRIVATE_MESSAGES = gql`
 `;
 
 export const SUBS_PRIVATE_MESSAGES_NOTIFICATION = gql`
-  subscription newPrivMessageNotification($receiverId: String!) {
-    newPrivMessageNotification(receiverId: $receiverId) {
+  subscription newMessageNotification($receiverId: String!) {
+    newMessageNotification(receiverId: $receiverId) {
+    message {
       _id
-		  senderId 
+      content
+    }
+    sender {
+      _id
+      userName
+      status
+    }
     }
   }
 `;

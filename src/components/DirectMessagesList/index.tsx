@@ -4,10 +4,10 @@ import { Container, FriendsWrapper, FriendsIcon, NitroWrapper, NitroIcon, Separa
 import { QUERY_GET_DIRECT_MESSAGES } from '../../graphql/queries'
 import { useMutation, useQuery } from '@apollo/client'
 import { MUTATION_UPDATE_UNSEEN_MESSAGES } from '../../graphql/mutations'
-import { client } from '../../app'
 import _ from 'lodash'
 import { useHistory } from 'react-router-dom'
 import { ERROR, PRIVATEMESSAGE } from '../../routes/pages'
+import { SUBS_PRIVATE_MESSAGES_NOTIFICATION } from '../../graphql/subscriptions'
 
 interface User {
     userId: string | null;
@@ -19,85 +19,63 @@ interface DirectMessage {
     userName: string;
     status: string; 
     unreadMessages: number;
-    isOpen: boolean;
 }
 
 export const DirectMessagesList: React.FC = (): JSX.Element => {
 
     const token = sessionStorage.getItem('token');
     const history = useHistory();
-    // const cache = client.cache;
     const currentUser : User = {
         userId: sessionStorage.getItem('currentUserId'),
         userName: sessionStorage.getItem('currentUserName')
     }
     const [directMessages, setDirectMessages] = useState<DirectMessage[]>([]);
-    const { data, loading } = useQuery(QUERY_GET_DIRECT_MESSAGES, {variables: { token }, fetchPolicy:"no-cache"})
-    const [isMounted, setIsMounted] = useState(false)
-
-
-    
-    // const handleOnCompleted = (data : any) :void => {
-    //     const users : User[] =[];
-    //     const sender: User = {
-    //         userId:  data.toggleUnseenMessages.id,
-    //         userName:  data.toggleUnseenMessages.userName
-    //     }
-    //     if(!currentUser.userId || !currentUser.userName || !sender.userId || !sender.userName){
-    //                 history.push({
-    //                     pathname: ERROR,
-    //                     state: {
-    //                         errorNum: 500,
-    //                         errorMessage: 'Something went wrong'
-    //                     }
-    //                 })
-    //     }
-    //     users.push(currentUser);
-    //     users.push(sender);
-
-
-    //         history.push({
-    //             pathname: PRIVATEMESSAGE,
-    //             state: {
-    //                 userId: data.toggleUnseenMessages.id,
-    //                 userName: data.toggleUnseenMessages.userName,
-    //                 users: users
-    //             }
-    //         })
-
-
-    // };
-    
+    const { data, loading,subscribeToMore } = useQuery(QUERY_GET_DIRECT_MESSAGES, {variables: { token }, fetchPolicy:"no-cache"})
     const [handleUnseen] = useMutation(MUTATION_UPDATE_UNSEEN_MESSAGES)
 
+
     useEffect(() => {
-        if(isMounted){
-            const newState: DirectMessage[] =[];
-            if(data && loading === false){
-                data.ChatList.forEach((element : any) => {
-                    const ele: DirectMessage = {
-                        userId: element.user.id,
-                        userName: element.user.userName,
-                        status: "online",
-                        unreadMessages: element.unreadMessages,
-                        isOpen: false
+        let unsub: any;
+        console.log('xpto')
+        unsub = subscribeToMore({
+            document: SUBS_PRIVATE_MESSAGES_NOTIFICATION,
+            variables: { receiverId: currentUser.userId, token: token },
+            updateQuery: (current, { subscriptionData }) => {
+                if (!subscriptionData.data) return current;
+                const newRequest = subscriptionData.data.newMessageNotification;
+                console.log(newRequest)
+                const state = _.clone(data.ChatList);
+                const isPresent = state.findIndex((x : any) => x.userId === newRequest.sender._id)
+                if(isPresent < 0){
+                    const newState : DirectMessage[] = [];
+                    const newEntry : DirectMessage ={
+                        userId: newRequest.sender._id,
+                        userName: newRequest.sender.userName,
+                        status: newRequest.sender.status,
+                        unreadMessages: 1,
                     }
-                    newState.push(ele)
-                });
-                setDirectMessages(newState)
+                    newState.concat(newEntry)
+                    setDirectMessages(newState.concat(state))
+                }else{
+                    state[isPresent].unreadMessages++;
+                    setDirectMessages(state)
+                }
             }
-        }
-    }, [data]);
-
-    useEffect(() => {
-        setIsMounted(true)
-
+        })
 
         return () => {
-            setIsMounted(false)
+            unsub();
         }
+    }, [data])
+    
 
-    }, [])
+    useEffect(() => {
+            if(data && loading === false){
+                setDirectMessages(data.ChatList)
+            }
+        
+    }, [data]);
+
 
     const handleOnClick = (item: any):void =>{
         handleUnseen({
@@ -173,3 +151,4 @@ export const DirectMessagesList: React.FC = (): JSX.Element => {
         </Container>
     )
 }
+
