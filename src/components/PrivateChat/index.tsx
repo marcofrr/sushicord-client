@@ -108,7 +108,6 @@ export const PrivateChat: React.FC<Props> = ({
             variables: { receiverId: receiverId, token: token },
             updateQuery: (current, { subscriptionData }) => {
                 if (!subscriptionData.data) return current; 
-                console.log(subscriptionData)               
                 const newRequest = subscriptionData.data.newPrivMessage;
                 setMessages(oldState => oldState.concat(newRequest))           
                 setMessages(oldState => _.sortBy( oldState, 'createdAt').reverse())
