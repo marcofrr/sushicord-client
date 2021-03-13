@@ -84,3 +84,12 @@ export const MUTATION_UPDATE_UNSEEN_MESSAGES = gql`
   }
 `;
 
+export const MUTATION_CREATE_FRIEND_REQUEST = gql`
+  mutation createFriendRequest($receiverId: String!) {
+    createFriendRequest(receiverId: $receiverId)
+    {
+      _id
+      
+    }
+  }
+`;

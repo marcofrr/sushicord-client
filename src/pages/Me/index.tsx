@@ -109,10 +109,10 @@ export const Me = (): any => {
                 />
                 {showOnline && <Friends />}
                 {showPending && <FriendRequest showPending={showPending} />}
-                {/* <ExtraSection
+                <ExtraSection
                     showAll={showAll}
                     showFriendForm={toggleFriend}
-                /> */}
+                />
 
                 {/* <PrivateChat status={'online'}></PrivateChat> */}
 
