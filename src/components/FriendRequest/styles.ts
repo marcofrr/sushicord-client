@@ -1,5 +1,18 @@
 import styled from "styled-components";
 import { CheckCircle, XCircle } from "styled-icons/bootstrap/";
+import {Props} from './'
+const handleColorStatus = (status: string) => {
+  switch (status) {
+    case "online":
+      return "#43B581";
+    case "offline":
+      return "#f21505";
+
+    default:
+      return "#36393F";
+  }
+};
+
 export const Container = styled.div`
   grid-area: C;
   display: flex;
@@ -49,13 +62,25 @@ export const Request = styled.div`
 `;
 
 export const Avatar = styled.div`
+  position: relative;
   flex-shrink: 0;
   width: 38px;
   height: 38px;
   background-color: var(--white);
   border-radius: 50%;
+  z-index: 10;
 `;
+export const Status = styled.div<Props>`
+  position: absolute;
+  left: 23px;
+  top: 23px;
+  border: 2px solid var(--loginBackground);
 
+  width: 14px;
+  height: 14px;
+  background-color: ${(props) => handleColorStatus(props.status)};
+  border-radius: 50%;
+`;
 export const UserContainer = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
@@ -71,13 +96,13 @@ export const AcceptIcon = styled(CheckCircle)`
   height: 40px;
   color: var(--symbol);
   margin-left: 200px;
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: pointer;
 
   transition: opacity 0.5s;
 
   &:hover {
-    opacity: 1;
+    opacity: 0.9;
     color: var(--discordGreen);
   }
 `;
@@ -87,13 +112,13 @@ export const DeclineIcon = styled(XCircle)`
   height: 40px;
   color: var(--symbol);
   margin-left: 10px;
-  opacity: 0.5;
+  opacity: 0.3;
   cursor: pointer;
 
   transition: opacity 0.5s;
 
   &:hover {
-    opacity: 1;
+    opacity: 0.9;
     color: var(--red);
   }
 `;

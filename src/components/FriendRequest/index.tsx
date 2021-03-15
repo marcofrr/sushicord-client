@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
-import { Container, Request, Avatar, UserContainer, Wrapper, AcceptIcon, DeclineIcon } from './styles'
+import { Container, Request, Avatar, UserContainer, Wrapper, AcceptIcon, DeclineIcon, Status } from './styles'
 import { MUTATION_HANDLE_FRIEND_REQUEST } from '../../graphql/mutations'
 import { QUERY_GET_FRIEND_REQUESTS } from '../../graphql/queries'
 import { SUBS_FRIEND_REQUESTS } from '../../graphql/subscriptions'
@@ -15,13 +15,12 @@ interface FriendRequest {
     _id: string | null;
     sender: Sender | null;
 }
-interface Props {
-    showPending: boolean;
+
+export interface Props {
+    status: string;
 }
 
-export const FriendRequest: React.FC<Props> = ({
-    showPending,
-}) => {
+export const FriendRequest: React.FC = () => {
 
     const token = sessionStorage.getItem('token');
     const receiverId = sessionStorage.getItem('currentUserId')
@@ -29,15 +28,8 @@ export const FriendRequest: React.FC<Props> = ({
     const ACCEPT = 'accept'
     const DECLINE = 'decline'
     const [friendRequests, setFriendRequests] = useState([])
-    const { subscribeToMore, data, loading } = useQuery(QUERY_GET_FRIEND_REQUESTS, { variables: { token } ,fetchPolicy:"network-only"})
-    const [mounted,setMounted] = useState(false)
+    const { subscribeToMore, data, loading } = useQuery(QUERY_GET_FRIEND_REQUESTS, { variables: { token } ,fetchPolicy:"no-cache"})
 
-    useEffect(() => {
-        setMounted(true)
-        return () => {
-            setMounted(false)
-        }
-    }, [])
 
     useEffect(() => {
         if(data && loading === false) setFriendRequests(data.FriendRequests)
@@ -51,22 +43,15 @@ export const FriendRequest: React.FC<Props> = ({
             updateQuery: (current, { subscriptionData }) => {
                 if (!subscriptionData.data) return current;
                 const newRequest = subscriptionData.data.newFriendRequest;
-                const updatedRequests = current.FriendRequests.concat(newRequest)
-                cache.writeQuery({
-                    query: QUERY_GET_FRIEND_REQUESTS,
-                    data: { FriendRequests: updatedRequests },
-                    variables: { token }
-                });
+                const currrentRequests = friendRequests
+                setFriendRequests(friendRequests.concat(newRequest))
             }
         })
 
-        if (showPending && data) {
-            setFriendRequests(data);
-        }
         return () => {
             unsub();
         }
-    }, [mounted])
+    }, [friendRequests])
 
 
 
@@ -86,16 +71,8 @@ export const FriendRequest: React.FC<Props> = ({
             },
             optimisticResponse: true,
             update: () => {
-                const existingRequests: any = cache.readQuery({
-                    query: QUERY_GET_FRIEND_REQUESTS,
-                    variables: { token }
-                });
-                const updatedRequests = existingRequests.FriendRequests.filter((t: FriendRequest) => (t._id !== _id));
-                cache.writeQuery({
-                    query: QUERY_GET_FRIEND_REQUESTS,
-                    data: { FriendRequests: updatedRequests },
-                    variables: { token }
-                });
+                const updatedRequests = friendRequests.filter((t: FriendRequest) => (t._id !== _id));
+                setFriendRequests(updatedRequests)
             }
 
         })
@@ -104,10 +81,13 @@ export const FriendRequest: React.FC<Props> = ({
     return (
         <Container>
             {loading && <div>Loading...</div>}
-            {friendRequests && friendRequests.map((request: any) =>
+            {friendRequests && friendRequests.map((request: any,index: number) =>
                 <Request key={request._id}>
                     <Wrapper>
-                        <Avatar />
+                        <Avatar>
+                        <Status status={'online'}></Status>
+
+                        </Avatar>
                         <UserContainer >
                             <strong>{request.sender.userName}</strong>
                         </UserContainer>
@@ -116,7 +96,6 @@ export const FriendRequest: React.FC<Props> = ({
                         <AcceptIcon onClick={() => handleAction(request._id, ACCEPT)} />
                         <DeclineIcon onClick={() => handleAction(request._id, DECLINE)} />
                     </div>
-
                 </Request>
             )}
         </Container>

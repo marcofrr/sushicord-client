@@ -108,7 +108,7 @@ export const Me = (): any => {
                     toggleDesktop={(screen) => toggleDesktop(screen)}
                 />
                 {showOnline && <Friends />}
-                {showPending && <FriendRequest showPending={showPending} />}
+                {showPending && <FriendRequest />}
                 <ExtraSection
                     showAll={showAll}
                     showFriendForm={toggleFriend}

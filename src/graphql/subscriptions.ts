@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const SUBS_FRIEND_REQUESTS = gql`
   subscription newFriendRequest($receiverId: String!) {
     newFriendRequest(receiverId: $receiverId) {
+      _id
       sender {
         _id
         email
